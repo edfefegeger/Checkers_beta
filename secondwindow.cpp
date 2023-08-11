@@ -1,14 +1,15 @@
+
 #include "secondwindow.h"
 #include "ui_secondwindow.h"
 #include "pieceitem.h"
 
 SecondWindow::SecondWindow(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::SecondWindow)
+    ui(new Ui::SecondWindow),
+    scene(new QGraphicsScene(this))
 {
     ui->setupUi(this);
 
-    scene = new QGraphicsScene(this);
     ui->graphicsView->setScene(scene);
 
     const int gridSize = 8; // размер сетки
@@ -49,7 +50,7 @@ void SecondWindow::createPieces(int gridSize, int cellSize)
                 int y = row * cellSize;
 
                 PieceItem* pieceItem = new PieceItem(x, y, cellSize, cellSize);
-                scene->addItem(pieceItem);
+                scene->addItem(pieceItem); // Добавляем объект на сцену
             }
         }
     }

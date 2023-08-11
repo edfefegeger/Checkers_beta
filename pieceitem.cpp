@@ -1,12 +1,9 @@
 
-#include <QGraphicsRectItem>
-#include <QGraphicsEllipseItem>
-#include <QMouseEvent>
-#include <QGraphicsSceneHoverEvent>
-#include <QBrush>
-#include "qgraphicsitem.h"
+
+
 #include "qgraphicsscene.h"
 #include <QGraphicsEllipseItem>
+#include <QBrush>
 
 class PieceItem : public QGraphicsEllipseItem
 {
@@ -38,9 +35,41 @@ public:
         return currentPosition;
     }
 
-
-
 protected:
+    void showPossibleMove()
+    {
+        // Удаляем все предыдущие отображения возможных ходов
+        QList<QGraphicsItem*> items = scene()->items();
+        for (QGraphicsItem* item : items)
+        {
+            if (item->type() == QGraphicsEllipseItem::Type)
+            {
+                scene()->removeItem(item);
+                delete item;
+            }
+        }
+
+        // Получаем текущую позицию шашки
+        qreal x = rect().x();
+        qreal y = rect().y();
+        qreal width = rect().width();
+        qreal height = rect().height();
+
+        // Вычисляем возможные ходы на поле
+        qreal moveX1 = x - width; // Влево
+        qreal moveX2 = x + width; // Вправо
+        qreal moveY1 = y - height; // Вверх
+        qreal moveY2 = y + height; // Вниз
+
+        // Создаем отображения возможных ходов на поле
+        QGraphicsEllipseItem* possibleMoveItem1 = new QGraphicsEllipseItem(moveX1, moveY1, width, height);
+        possibleMoveItem1->setBrush(Qt::blue);
+        scene()->addItem(possibleMoveItem1);
+
+        QGraphicsEllipseItem* possibleMoveItem2 = new QGraphicsEllipseItem(moveX2, moveY2, width, height);
+        possibleMoveItem2->setBrush(Qt::blue);
+        scene()->addItem(possibleMoveItem2);
+    }
 
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override
     {
@@ -48,10 +77,7 @@ protected:
 
         // Показать возможные ходы для данной шашки
         showPossibleMove();
-
-        // Другие действия при нажатии на шашку...
     }
-
 
     void hoverEnterEvent(QGraphicsSceneHoverEvent* event) override
     {
